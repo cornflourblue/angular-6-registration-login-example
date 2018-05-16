@@ -1,9 +1,9 @@
 {
-  "name": "angular2-registration-login-example-webpack",
+  "name": "angular-6-registration-login-example-webpack",
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cornflourblue/angular2-registration-login-example-webpack.git"
+    "url": "https://github.com/cornflourblue/angular-6-registration-login-example-webpack.git"
   },
   "scripts": {
     "build": "webpack --mode production",
