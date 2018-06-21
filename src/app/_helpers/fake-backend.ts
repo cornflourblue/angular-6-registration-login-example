@@ -16,7 +16,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return of(null).pipe(mergeMap(() => {
 
             // authenticate
-            if (request.url.endsWith('/api/authenticate') && request.method === 'POST') {
+            if (request.url.endsWith('/users/authenticate') && request.method === 'POST') {
                 // find if any user matches login credentials
                 let filteredUsers = users.filter(user => {
                     return user.username === request.body.username && user.password === request.body.password;
@@ -36,23 +36,23 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     return of(new HttpResponse({ status: 200, body: body }));
                 } else {
                     // else return 400 bad request
-                    return throwError('Username or password is incorrect');
+                    return throwError({ error: { message: 'Username or password is incorrect' } });
                 }
             }
 
             // get users
-            if (request.url.endsWith('/api/users') && request.method === 'GET') {
+            if (request.url.endsWith('/users') && request.method === 'GET') {
                 // check for fake auth token in header and return users if valid, this security is implemented server side in a real application
                 if (request.headers.get('Authorization') === 'Bearer fake-jwt-token') {
                     return of(new HttpResponse({ status: 200, body: users }));
                 } else {
                     // return 401 not authorised if token is null or invalid
-                    return throwError('Unauthorised');
+                    return throwError({ error: { message: 'Unauthorised' } });
                 }
             }
 
             // get user by id
-            if (request.url.match(/\/api\/users\/\d+$/) && request.method === 'GET') {
+            if (request.url.match(/\/users\/\d+$/) && request.method === 'GET') {
                 // check for fake auth token in header and return user if valid, this security is implemented server side in a real application
                 if (request.headers.get('Authorization') === 'Bearer fake-jwt-token') {
                     // find user by id in users array
@@ -64,19 +64,19 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     return of(new HttpResponse({ status: 200, body: user }));
                 } else {
                     // return 401 not authorised if token is null or invalid
-                    return throwError('Unauthorised');
+                    return throwError({ error: { message: 'Unauthorised' } });
                 }
             }
 
-            // create user
-            if (request.url.endsWith('/api/users') && request.method === 'POST') {
+            // register user
+            if (request.url.endsWith('/users/register') && request.method === 'POST') {
                 // get new user object from post body
                 let newUser = request.body;
 
                 // validation
                 let duplicateUser = users.filter(user => { return user.username === newUser.username; }).length;
                 if (duplicateUser) {
-                    return throwError('Username "' + newUser.username + '" is already taken');
+                    return throwError({ error: { message: 'Username "' + newUser.username + '" is already taken' } });
                 }
 
                 // save new user
@@ -89,7 +89,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             }
 
             // delete user
-            if (request.url.match(/\/api\/users\/\d+$/) && request.method === 'DELETE') {
+            if (request.url.match(/\/users\/\d+$/) && request.method === 'DELETE') {
                 // check for fake auth token in header and return user if valid, this security is implemented server side in a real application
                 if (request.headers.get('Authorization') === 'Bearer fake-jwt-token') {
                     // find user by id in users array
@@ -109,7 +109,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     return of(new HttpResponse({ status: 200 }));
                 } else {
                     // return 401 not authorised if token is null or invalid
-                    return throwError('Unauthorised');
+                    return throwError({ error: { message: 'Unauthorised' } });
                 }
             }
 
