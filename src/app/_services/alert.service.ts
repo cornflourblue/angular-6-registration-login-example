@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import { Router, NavigationStart } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class AlertService {
 
     constructor(private router: Router) {
         // clear alert message on route change
-        router.events.subscribe(event => {
+        router.events.subscribe((event) => {
             if (event instanceof NavigationStart) {
                 if (this.keepAfterNavigationChange) {
                     // only keep for a single location change
@@ -22,17 +22,17 @@ export class AlertService {
         });
     }
 
-    success(message: string, keepAfterNavigationChange = false) {
+    public success(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({ type: 'success', text: message });
     }
 
-    error(message: string, keepAfterNavigationChange = false) {
+    public error(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({ type: 'error', text: message });
     }
 
-    getMessage(): Observable<any> {
+    public getMessage(): Observable<any> {
         return this.subject.asObservable();
     }
 }
